@@ -1,6 +1,6 @@
 import os
 import pika
-from producer.producer_interface import mqProducerInterface
+from producer_interface import mqProducerInterface
 class mqProducer(mqProducerInterface):
     def __init__(self, exchange_name: str, routing_key: str):
         self.exchange_name = exchange_name
