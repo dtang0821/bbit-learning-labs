@@ -7,8 +7,8 @@ class mqProducer(mqProducerInterface):
         self.routing_key = routing_key
         self.setupRMQConnection()
 
-    def setupRMQConnection():
-        con_params = pika.URLParameters(os.environ["AMPQ_URL"])
+    def setupRMQConnection(self) -> None:
+        con_params = pika.URLParameters(os.environ["AMQP_URL"])
         self.connection = pika.BlockingConnection(parameters = con_params)
         self.channel = self.connection.channel()
 
