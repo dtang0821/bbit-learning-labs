@@ -25,12 +25,13 @@ class mqConsumer(mqConsumerInterface):
         self.channel.basic_consume(queue=self.queue_name, on_message_callback=self.on_message_callback, auto_ack=False)
 
     def on_message_callback(self, channel, method_frame, header_frame, body) -> None:
-        channel.basic_ack(delivery_tag=method_frame.delivery_tag, multiple=False)
-
         if self.message_handler:
             self.message_handler(body)
         else:
             print(f"Received message: {body}")
+        
+        self.channel.basic_ack(delivery_tag=method_frame.delivery_tag, multiple=False)
+
 
     def startConsuming(self) -> None:
         print('Waiting for messages. To exit press CTRL+C')
@@ -38,5 +39,8 @@ class mqConsumer(mqConsumerInterface):
 
     def __del__(self) -> None:
         print("Closing RMQ connection on destruction")
-        self.channel.close()
-        self.connection.close()
+        if hasattr(self, 'channel') and self.channel.is_open:
+            self.channel.close()
+            
+        if hasattr(self, 'connection') and self.connection.is_open:
+            self.connection.close()
