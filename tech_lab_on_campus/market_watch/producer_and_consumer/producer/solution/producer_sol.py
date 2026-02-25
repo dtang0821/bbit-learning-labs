@@ -1,16 +1,16 @@
 import os
 import pika
-from producer.producer_interface import mqProducerInterface
+from producer_interface import mqProducerInterface
 class mqProducer(mqProducerInterface):
     def __init__(self, exchange_name: str, routing_key: str):
         self.exchange_name = exchange_name
         self.routing_key = routing_key
         self.setupRMQConnection()
 
-    def setupRMQConnection():
-        con_params = pika.URLParameters(os.environ["AMPQ_URL"])
+    def setupRMQConnection(self) -> None:
+        con_params = pika.URLParameters(os.environ["AMQP_URL"])
         self.connection = pika.BlockingConnection(parameters = con_params)
-        self.channel = connection.channel()
+        self.channel = self.connection.channel()
 
     def publishOrder(self, message: str):
         self.channel.basic_publish(
