@@ -10,7 +10,7 @@ class mqProducer(mqProducerInterface):
     def setupRMQConnection(self):
         con_params = pika.URLParameters(os.environ["AMQP_URL"])
         self.connection = pika.BlockingConnection(parameters = con_params)
-        self.channel = connection.channel()
+        self.channel = self.connection.channel()
 
     def publishOrder(self, message: str):
         self.channel.basic_publish(
