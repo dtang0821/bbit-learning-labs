@@ -15,7 +15,7 @@
 
 class mqConsumerInterface:
     def __init__(
-        self, binding_key: str, exchange_name: str, queue_name: str
+        self, binding_key: str, exchange_name: str, queue_name: str, me
     ) -> None:
         # Save parameters to class variables
 

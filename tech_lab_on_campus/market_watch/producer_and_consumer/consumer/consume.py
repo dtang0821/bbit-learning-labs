@@ -20,16 +20,23 @@ import sys
 from solution.consumer_sol import mqConsumer  # pylint: disable=import-error
 
 
-def main() -> None:
-    consumer = mqConsumer(binding_key="Tech Lab Key",exchange_name="Tech Lab Exchange",queue_name="Tech Lab Queue")
-    consumer.startConsuming()
+def my_custom_handler(message_body):
+    text = message_body.decode('utf-8')
+    print(f"Success, handler caught the message: {text}")
 
+def main() -> None:
+    consumer = mqConsumer(binding_key="Tech Lab Key",exchange_name="Tech Lab Exchange",queue_name="Tech Lab Queue", message_handler=my_custom_handler)
+    try:
+        consumer.startConsuming()
+    except KeyboardInterrupt:
+        print("\nInterrupted by user, shutting down.")
+        del consumer
+        raise
 
 if __name__ == "__main__":
     try:
         main()
     except KeyboardInterrupt:
-        print("Interrupted")
         try:
             sys.exit(0)
         except SystemExit:
