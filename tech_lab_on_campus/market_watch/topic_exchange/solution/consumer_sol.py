@@ -4,10 +4,10 @@ import os
 from consumer_interface import mqConsumerInterface
 
 class mqConsumer(mqConsumerInterface):
-    def __init__(self, binding_key: str, exchange_name: str, queue_name: str, **kwargs) -> None:
+    def __init__(self, binding_keys: list, exchange_name: str, queue_name: str, **kwargs) -> None:
         self.queue_name = queue_name
         self.exchange_name = exchange_name
-        self.binding_key = binding_key
+        self.binding_keys = binding_keys
         self.message_handler = kwargs.get('message_handler', None)
 
         self.setupRMQConnection()
@@ -20,7 +20,8 @@ class mqConsumer(mqConsumerInterface):
         self.channel.exchange_declare(exchange=self.exchange_name, exchange_type='topic')
         self.channel.queue_declare(queue=self.queue_name)
 
-        self.channel.queue_bind(exchange=self.exchange_name, queue=self.queue_name, routing_key=self.binding_key)
+        for binding_key in self.binding_keys:
+            self.channel.queue_bind(exchange=self.exchange_name, queue=self.queue_name, routing_key=binding_key)
 
         self.channel.basic_consume(queue=self.queue_name, on_message_callback=self.on_message_callback, auto_ack=False)
 
